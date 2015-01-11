@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 import Tkinter as tk
 import tkMessageBox as tkmsg
 import tkFileDialog as tkfile
@@ -5,6 +6,8 @@ import tkFileDialog as tkfile
 Author : Amartya Vadlamani
 This Code is licenced under the GNU Public Licence V2
 '''
+
+exedit = "exedit"
 def langload(state):
 	tkmsg.askyesno("Hey you! Hey Listen!","Did you see date when this was published? Do you think I have the time. Gimme a week")
 
@@ -12,11 +15,12 @@ def new(widgets,state):
 	if(state["unsaved changes"]):
 		if(tkmsg.askyesno("Are you sure","You didn't save")):
 				widgets["textarea"].delete(1.0,"end")
+	mainwin["basepanel"].title("Untitled Document - %s" % (exedit))
 
 def save(widgets,state):
 	outfile = tkfile.asksaveasfile(mode="w",defaultextension=".txt")
-	if outfile == None:#user canceled with cancel button
-		return
+	if outfile == None: # User pressed cancel button.
+		return None
 	text = str(widgets["textarea"].get(1.0,"end"))
 	outfile.write(text)
 	outfile.close()
@@ -24,7 +28,11 @@ def save(widgets,state):
 def openandload(widgets,state):
 	new(widgets,state)
 	infile = tkfile.askopenfile(mode="r")
+	if infile == None: # User pressed cancel button.
+		return None
 	text = infile.read()
+	name = infile.name
+	mainwin["basepanel"].title("%s - %s" % (name, exedit))
 	widgets["textarea"].insert(1.0,text)
 
 def onchange(state):
@@ -51,4 +59,5 @@ def initComponents():
 
 initComponents()
 
+mainwin["basepanel"].title(exedit)
 mainwin["basepanel"].mainloop()
